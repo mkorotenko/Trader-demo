@@ -1,14 +1,38 @@
 
-export class Table extends Array {
-    constructor() {
+export class Table extends Array<Row> {
+
+    constructor(columns: { name: string, description?: string}[]) {
         super();
         (<any>Object).setPrototypeOf(this, Table.prototype);
-        this.init();
+        this.columns = columns.map(c => new Column(c.name, c.description || ''));
     }
 
-    public init() {
-        console.info('Table init');
+    public columns: Column[];
+
+    public header: Row;
+
+    public addRow(data: any): Row {
+        let newRow = new Row(this.columns, data);
+        this.push(newRow);
+        return newRow;
     }
+
+    public createHeader() {
+        this.header = new Row(this.columns);
+    }
+
+    public removeHeader() {
+        this.header = undefined;
+    }
+
+    private renderContent(): string {
+        return this.header? this.header.render():'' +  this.map(r => r.render()).join();
+    }
+
+    public render(): string {
+        return `<div class="Table">${this.renderContent()}</div>`;
+    }
+
 }
 
 export class Header {
@@ -19,38 +43,41 @@ export class Header {
         return `<div class="Table-row Table-header">${this.renderContent()}</div>`;
     }
 
-    public renderContent(): string {
+    private renderContent(): string {
         return this.columns.map(c => c.renderHeader()).join();
     }
+
 }
 
 export class Row {
 
-    public columns: Column[];
-    public data: any;
+    constructor(
+        public columns: Column[],
+        public data?: any
+    ) {}
 
     public render(): string {
         return `<div class="Table-row">${this.renderContent()}</div>`;
     }
 
-    public renderContent(): string {
-        return this.columns.map(c => c.renderCell(this.data[c.name])).join();
+    private renderContent(): string {
+        return this.columns.map(c => c.renderCell((this.data || {})[c.name] || '')).join();
     }
+
 }
 
- export class Column {
-     constructor(
-        public name: string,
-        public description: string
-     ) {
+export class Column {
+    constructor(
+       public name: string,
+       public description: string
+    ) { }
 
-     }
+    public renderHeader(): string {
+       return `<div class="Table-row-item">${this.description}</div>`;
+    }
 
-     renderHeader(): string {
-        return `<div class="Table-row-item">${this.description}</div>`;
-     }
+    public renderCell(value: string): string {
+        return `<div class="Table-row-item" data-header="${this.name}">${value }</div>`;
+    }
 
-     renderCell(value: string): string {
-         return `<div class="Table-row-item" data-header="${this.name}">${value }</div>`;
-     }
- }
+}

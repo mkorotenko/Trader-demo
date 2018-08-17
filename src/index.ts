@@ -4,7 +4,9 @@ import './styles/index.scss';
 import { Table } from './models/table';
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.info('DOMContentLoaded');
-
-    let t = new Table();
+    let t = new Table([
+        {name:'id'},
+        {name: 'action'}
+    ]);
+    console.info('DOMContentLoaded', t);
 });
