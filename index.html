@@ -8,37 +8,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
-    <div class="Table">
-        <div class="Table-row Table-header">
-          <div class="Table-row-item">Long Header1</div>
-          <div class="Table-row-item">Header2</div>
-          <div class="Table-row-item">Header3</div>
-          <div class="Table-row-item">Header4</div>
-        </div>
-        <div class="Table-row">
-          <div class="Table-row-item" data-header="Header1">row1 col1</div>
-          <div class="Table-row-item" data-header="Header2">row1 col2</div>
-          <div class="Table-row-item" data-header="Header3">row1 col3</div>
-          <div class="Table-row-item" data-header="Header4">row1 col4</div>
-        </div>
-        <div class="Table-row">
-          <div class="Table-row-item" data-header="Header1">row2 col1</div>
-          <div class="Table-row-item" data-header="Header2">row2 col2</div>
-          <div class="Table-row-item" data-header="Header3">row2 col3</div>
-          <div class="Table-row-item" data-header="Header4">row2 col4</div>
-        </div>
-        <div class="Table-row">
-          <div class="Table-row-item" data-header="Header1">row3 col1</div>
-          <div class="Table-row-item" data-header="Header2">row3 col2</div>
-          <div class="Table-row-item" data-header="Header3">row3 col3</div>
-          <div class="Table-row-item" data-header="Header4">row3 col4</div>
-        </div>
-        <div class="Table-row">
-          <div class="Table-row-item" data-header="Header1">row4 col1</div>
-          <div class="Table-row-item" data-header="Header2">row4 col2</div>
-          <div class="Table-row-item" data-header="Header3">row4 col3</div>
-          <div class="Table-row-item" data-header="Header4">row4 col4</div>
-        </div>
-      </div>
+  <div class="flex-container">
+      <my-table column-1="id" column-2="action"></my-table>
+      <my-table header column-1="symbol;Symbol" column-2="price;Price" column-3="action"></my-table>
+  </div>
 </body>
 </html>

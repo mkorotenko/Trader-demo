@@ -1,15 +1,50 @@
+import { IComponent } from "./component";
 
-export class Table extends Array<Row> {
+export interface IColumn {
+    name: string
+    description?: string
+}
 
-    constructor(columns: { name: string, description?: string}[]) {
-        super();
-        (<any>Object).setPrototypeOf(this, Table.prototype);
-        this.columns = columns.map(c => new Column(c.name, c.description || ''));
+const COL_SETTING = /column-\d/i;
+const HAS_HEADER = /header/i;
+
+export class Table extends Array<Row> implements IComponent {
+
+    public columns: Column[] = [];
+
+    public header: Header;
+
+    private hasHeader: boolean = false;
+
+    constructor(columns?: IColumn[]) {
+         super();
+         (<any>Object).setPrototypeOf(this, Table.prototype);
+
+         if (columns)
+            this.columns = columns.map((c) => new Column(c.name, c.description || ''));
+
+            console.info('Table', this);
+     }
+
+    public applySettings(data: { setting: string, value: string }): Table {
+
+        if (COL_SETTING.test(data.setting)) {
+            let vals = data.value.split(';');
+            this.columns.push(new Column(vals[0], vals[1] || ''));
+        } else if (HAS_HEADER.test(data.setting)) {
+            this.hasHeader = true;
+        }
+
+        return this;
     }
+     
+     //public map(): any {
+    public map<U>(callbackfn: (value: any, index: number, array: any[]) => U, thisArg?: any): U[] {
+        let res: Row[] = [];
+        this.forEach(r => res.push(r));
 
-    public columns: Column[];
-
-    public header: Row;
+         return super.map.apply(res, Array.prototype.slice.apply(arguments))
+     }
 
     public addRow(data: any): Row {
         let newRow = new Row(this.columns, data);
@@ -18,7 +53,7 @@ export class Table extends Array<Row> {
     }
 
     public createHeader() {
-        this.header = new Row(this.columns);
+        this.header = new Header(this.columns);
     }
 
     public removeHeader() {
@@ -26,7 +61,10 @@ export class Table extends Array<Row> {
     }
 
     private renderContent(): string {
-        return this.header? this.header.render():'' +  this.map(r => r.render()).join();
+        if (this.hasHeader && !this.header)
+            this.createHeader();
+
+        return this.header? this.header.render():'' +  this.map(r => r.render()).join('');
     }
 
     public render(): string {
@@ -35,21 +73,23 @@ export class Table extends Array<Row> {
 
 }
 
-export class Header {
+class Header {
 
-    public columns: Column[];
+    constructor(
+        public columns: Column[],
+    ) {}
 
     public render(): string {
         return `<div class="Table-row Table-header">${this.renderContent()}</div>`;
     }
 
     private renderContent(): string {
-        return this.columns.map(c => c.renderHeader()).join();
+        return this.columns.map(c => c.renderHeader()).join('');
     }
 
 }
 
-export class Row {
+class Row {
 
     constructor(
         public columns: Column[],
@@ -61,12 +101,12 @@ export class Row {
     }
 
     private renderContent(): string {
-        return this.columns.map(c => c.renderCell((this.data || {})[c.name] || '')).join();
+        return this.columns.map(c => c.renderCell((this.data || {})[c.name] || '')).join('');
     }
 
 }
 
-export class Column {
+class Column implements IColumn {
     constructor(
        public name: string,
        public description: string
