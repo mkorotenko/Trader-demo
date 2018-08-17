@@ -42,7 +42,6 @@ export class Table extends Array<Row> implements IComponent {
         return this;
     }
 
-    //public map(): any {
     public map<U>(callbackfn: (value: any, index: number, array: any[]) => U, thisArg?: any): U[] {
         let res: Row[] = [];
         this.forEach(r => res.push(r));
@@ -53,7 +52,16 @@ export class Table extends Array<Row> implements IComponent {
     public addRow(data: any): Row {
         let newRow = new Row(this.columns, data);
         this.push(newRow);
+        this.nativeNode.innerHTML = this.render();
         return newRow;
+    }
+
+    public addRows(data: any[]): Row[] {
+        let res: Row[];
+        res = data.map(d => new Row(this.columns, d));
+        res.forEach(r => this.push(r));
+        this.nativeNode.innerHTML = this.render();
+        return res;
     }
 
     public createHeader() {

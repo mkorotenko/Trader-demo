@@ -9,11 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
     compMap.set('my-table', Table);
 
     let rows = [
-        { id: 'id1', action: 'Action #1'},
-        { id: 'id2', action: 'Action #2'},
-        { id: 'id3', action: 'Action #3'}
+        { id: 'id1', action: '<button id="id1">Watch</button>'},
+        { id: 'id2', action: '<button id="id2">Watch</button>'},
+        { id: 'id3', action: '<button id="id3">Watch</button>'}
     ];
     const nodes = ComponentFactory.attach(compMap, (<any>document));
+    const symTable = nodes.find(n => n.id === 'symbols');
+    if (symTable) {
+        (<Table>symTable).addRows(rows);
+    }
+
     console.info('Root nodes', nodes);
     document.getElementById('onAddSymbol').addEventListener('click', onAddSymbol);
 });

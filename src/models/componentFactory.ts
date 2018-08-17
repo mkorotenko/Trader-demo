@@ -4,8 +4,8 @@ import { toArray } from "../utils";
  export class ComponentFactory {
     
     //public static attach(selector: string, component: any, node: Element): IComponent[] { 
-    public static attach(map: Map<string, any>, node: Element, res?: Set<IComponent>): Set<IComponent> { 
-        const result = res || new Set();
+    public static attach(map: Map<string, any>, node: Element, res?: IComponent[]): IComponent[] { 
+        const result = res || [];
 
         map.forEach((component, selector) => {
             const elements = node.getElementsByTagName(selector);
@@ -28,7 +28,7 @@ import { toArray } from "../utils";
                 element.attributes.setNamedItem(document.createAttribute('my-processed'));
                 obj.nativeNode = element;
                 obj.id = element.id;
-                result.add(obj);
+                result.push(obj);
                 if (element.childNodes.length)
                     ComponentFactory.attach(map, element, result);
             });
