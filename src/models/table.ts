@@ -1,6 +1,6 @@
 import { IComponent } from "./component";
 
-export interface IColumn {
+interface IColumn {
     name: string
     description?: string
 }

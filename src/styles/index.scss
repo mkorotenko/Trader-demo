@@ -3,7 +3,6 @@ html, body {
     width: 100%;
     font-size: 100%;
     font-family: 'Roboto', sans-serif;
-    text-align: center;
     font-weight: lighter;
 }
 
@@ -13,3 +12,6 @@ a{
 
 @import './layout.scss';
 @import './table.scss';
+@import './controls.scss';
+@import './refresh.scss';
+@import './symbol-add.scss';

@@ -1,4 +1,17 @@
 .flex-container {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
+  .flex-content {
+    display: block;
+    padding: 0.5rem;
+    width: 100%;
+    height: 100%;
+    .section{
+      .section-title {
+        text-align: left;
+        font-weight: bold;
+        padding: 10px 0;
+      }
+    }
   }
+}

@@ -1,0 +1,17 @@
+ button {
+    color: #fff;
+    font-weight: 600;
+    background-color: #2d7db8;
+    border: 0;
+    width: 60px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+        background-color: #1b5a88;
+    }
+
+    &.active {
+        background-color: #73b8fb;
+    }
+ }

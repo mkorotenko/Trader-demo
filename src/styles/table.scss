@@ -8,15 +8,14 @@ my-table {
 
 .Table {
     $light-color: #ffffff;
-    $dark-color: #f2f2f2;
+    $dark-color: #c4dce0;
     $md: 500px;
   
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
-    border: 1px solid $dark-color;
     font-size: 1rem;
-    margin: 0.5rem;
+    // margin: 0.5rem;
     line-height: 1.5;
   
     // .Table-header
@@ -52,7 +51,6 @@ my-table {
           font-weight: 700;
         }
         @include breakpoint($md) {
-          border: 1px solid $light-color;
           padding: 0.5em;
           &:before { content: none; }
         }

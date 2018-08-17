@@ -1,16 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Trader</title>
     <meta name="theme-color" content="Blue">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-</head>
-<body>
-  <div class="flex-container">
-      <my-table column-1="id" column-2="action"></my-table>
-      <my-table header column-1="symbol;Symbol" column-2="price;Price" column-3="action"></my-table>
-  </div>
-</body>
+  </head>
+
+  <body>
+    <div class="flex-container">
+      <div class="flex-content">
+        <div class="section">
+          <div class="section-title">
+            <span>Settings</span>
+          </div>
+          <my-refresh>
+            <div class="title">
+              <span>Data refresh period:</span>
+            </div>
+            <select>
+              <option value="1">1 second</option>
+              <option value="10">10 seconds</option>
+              <option value="60">1 minute</option>
+              <option value="600">10 minutes</option>
+            </select>
+          </my-refresh>
+        </div>
+        <div class="section">
+          <div class="section-title">
+            <span>Symbols</span>
+          </div>
+          <my-table column-1="id" column-2="action"></my-table>
+          <my-symbol-add>
+              <div class="select-symbol">
+                  <select>
+                      <option value="1">1 second</option>
+                      <option value="10">10 seconds</option>
+                      <option value="60">1 minute</option>
+                      <option value="600">10 minutes</option>
+                    </select>/
+                    <select>
+                      <option value="1">1 second</option>
+                      <option value="10">10 seconds</option>
+                      <option value="60">1 minute</option>
+                      <option value="600">10 minutes</option>
+                    </select>
+                        </div>
+            <button >Add</button>
+          </my-symbol-add>
+        </div>
+      </div>
+      <div class="flex-content">
+        <div class="section">
+          <div class="section-title">
+            <span>Rates</span>
+          </div>
+          <my-table header column-1="symbol;Symbol" column-2="price;Price" column-3="action"></my-table>
+        </div>
+      </div>
+    </div>
+  </body>
+
 </html>
