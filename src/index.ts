@@ -4,23 +4,20 @@ import './styles/index.scss';
 import { Table } from './models/table';
 import { ComponentFactory } from './models/componentFactory';
 
-function toDom(str: string) {
-    var tmp = document.createElement("div");
-    tmp.innerHTML = str;
-    return tmp.childNodes;
-  };
-
 document.addEventListener("DOMContentLoaded", () => {
-    // let table = new Table([
-    //     {name:'id'},
-    //     {name: 'action'}
-    // ]);
-    // console.info('DOMContentLoaded', table);
-    // table.addRow({ id: 'id1', action: 'Action #1'})
-    // table.addRow({ id: 'id2', action: 'Action #2'})
-    // table.addRow({ id: 'id3', action: 'Action #3'})
-    // let tabs = document.getElementsByTagName('my-table');
-    // let list = Array.prototype.slice.call(tabs);
-    // list.forEach((e: Element) => e.innerHTML = table.render());
-    ComponentFactory.attach('my-table', Table)
+    const compMap = new Map();
+    compMap.set('my-table', Table);
+
+    let rows = [
+        { id: 'id1', action: 'Action #1'},
+        { id: 'id2', action: 'Action #2'},
+        { id: 'id3', action: 'Action #3'}
+    ];
+    const nodes = ComponentFactory.attach(compMap, (<any>document));
+    console.info('Root nodes', nodes);
+    document.getElementById('onAddSymbol').addEventListener('click', onAddSymbol);
 });
+
+function onAddSymbol() {
+    console.info('onAddSymbol', arguments);
+}

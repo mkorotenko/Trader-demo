@@ -10,21 +10,25 @@ const HAS_HEADER = /header/i;
 
 export class Table extends Array<Row> implements IComponent {
 
+    public id: string;
+    
     public columns: Column[] = [];
 
     public header: Header;
 
     private hasHeader: boolean = false;
 
-    constructor(columns?: IColumn[]) {
-         super();
-         (<any>Object).setPrototypeOf(this, Table.prototype);
+    public nativeNode: Element;
+    public childNodes: Set<Element>;
 
-         if (columns)
+    constructor(columns?: IColumn[]) {
+        super();
+        (<any>Object).setPrototypeOf(this, Table.prototype);
+    
+        if (columns)
             this.columns = columns.map((c) => new Column(c.name, c.description || ''));
 
-            console.info('Table', this);
-     }
+    }
 
     public applySettings(data: { setting: string, value: string }): Table {
 
@@ -37,14 +41,14 @@ export class Table extends Array<Row> implements IComponent {
 
         return this;
     }
-     
-     //public map(): any {
+
+    //public map(): any {
     public map<U>(callbackfn: (value: any, index: number, array: any[]) => U, thisArg?: any): U[] {
         let res: Row[] = [];
         this.forEach(r => res.push(r));
 
-         return super.map.apply(res, Array.prototype.slice.apply(arguments))
-     }
+        return super.map.apply(res, Array.prototype.slice.apply(arguments))
+    }
 
     public addRow(data: any): Row {
         let newRow = new Row(this.columns, data);
@@ -64,7 +68,7 @@ export class Table extends Array<Row> implements IComponent {
         if (this.hasHeader && !this.header)
             this.createHeader();
 
-        return this.header? this.header.render():'' +  this.map(r => r.render()).join('');
+        return this.header ? this.header.render() : '' + this.map(r => r.render()).join('');
     }
 
     public render(): string {
@@ -77,7 +81,7 @@ class Header {
 
     constructor(
         public columns: Column[],
-    ) {}
+    ) { }
 
     public render(): string {
         return `<div class="Table-row Table-header">${this.renderContent()}</div>`;
@@ -94,7 +98,7 @@ class Row {
     constructor(
         public columns: Column[],
         public data?: any
-    ) {}
+    ) { }
 
     public render(): string {
         return `<div class="Table-row">${this.renderContent()}</div>`;
@@ -108,16 +112,16 @@ class Row {
 
 class Column implements IColumn {
     constructor(
-       public name: string,
-       public description: string
+        public name: string,
+        public description: string
     ) { }
 
     public renderHeader(): string {
-       return `<div class="Table-row-item">${this.description}</div>`;
+        return `<div class="Table-row-item">${this.description}</div>`;
     }
 
     public renderCell(value: string): string {
-        return `<div class="Table-row-item" data-header="${this.name}">${value }</div>`;
+        return `<div class="Table-row-item" data-header="${this.name}">${value}</div>`;
     }
 
 }
