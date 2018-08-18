@@ -1,4 +1,5 @@
-import { IComponent } from "./component";
+import { IComponent } from '../models/component';
+import { EventEmitter } from '../models/eventEmitter';
 
 interface IColumn {
     name: string
@@ -7,8 +8,11 @@ interface IColumn {
 
 const COL_SETTING = /column-\d/i;
 const HAS_HEADER = /header/i;
+const COMPONENTS = new Set();
 
 export class Table extends Array<Row> implements IComponent {
+
+    private hasHeader: boolean = false;
 
     public id: string;
     
@@ -16,10 +20,12 @@ export class Table extends Array<Row> implements IComponent {
 
     public header: Header;
 
-    private hasHeader: boolean = false;
-
     public nativeNode: Element;
-    public childNodes: Set<Element>;
+    public childNodes: Element[];
+    public childComponents: IComponent[];
+    public static instances = COMPONENTS;
+    
+    public change = new EventEmitter();
 
     constructor(columns?: IColumn[]) {
         super();
@@ -52,7 +58,7 @@ export class Table extends Array<Row> implements IComponent {
     public addRow(data: any): Row {
         let newRow = new Row(this.columns, data);
         this.push(newRow);
-        this.nativeNode.innerHTML = this.render();
+        this.change.emit(this);
         return newRow;
     }
 
@@ -60,7 +66,7 @@ export class Table extends Array<Row> implements IComponent {
         let res: Row[];
         res = data.map(d => new Row(this.columns, d));
         res.forEach(r => this.push(r));
-        this.nativeNode.innerHTML = this.render();
+        this.change.emit(this);
         return res;
     }
 

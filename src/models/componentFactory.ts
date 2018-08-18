@@ -4,7 +4,7 @@ import { toArray } from "../utils";
  export class ComponentFactory {
     
     //public static attach(selector: string, component: any, node: Element): IComponent[] { 
-    public static attach(map: Map<string, any>, node: Element, res?: IComponent[]): IComponent[] { 
+    public static attach(map: Map<string, IComponentConstructor>, node: Element, res?: IComponent[]): IComponent[] { 
         const result = res || [];
 
         map.forEach((component, selector) => {
@@ -16,21 +16,41 @@ import { toArray } from "../utils";
     
             list.forEach((element: Element) => {
                 
-                if (element.attributes.getNamedItem('my-processed'))
-                    return; 
+                let obj: IComponent;
 
-                let settings: { setting: string, value: string }[] = toArray<Node>(element.attributes).map(e => ({ setting: e.nodeName, value: e.nodeValue }));
-                let obj = new component();
+                if (!element.attributes.getNamedItem('my-processed')) {
 
-                settings.forEach(s => obj.applySettings(s));
+                    let settings: { setting: string, value: string }[] = toArray<Node>(element.attributes).map(e => ({ setting: e.nodeName, value: e.nodeValue }));
+                    obj = new component();
+                    result.push(obj);
+    
+                    settings.forEach(s => obj.applySettings(s));
+    
+                    element.attributes.setNamedItem(document.createAttribute('my-processed'));
+                    obj.nativeNode = element;
+                    obj.id = element.id;
+    
+                    obj.change.subscribe((comp:IComponent) => {
+                        console.info(`Component change ${selector}`, obj);
+                        let el = comp.nativeNode;
+                        el.innerHTML = obj.render();
+                        if (el.childNodes.length)
+                            obj.childComponents = ComponentFactory.attach(map, el);
+                    });
+    
+                    element.innerHTML = obj.render();
 
-                element.innerHTML = obj.render();
-                element.attributes.setNamedItem(document.createAttribute('my-processed'));
-                obj.nativeNode = element;
-                obj.id = element.id;
-                result.push(obj);
+                    component.instances.add(obj);
+
+                }
+                else
+                    component.instances.forEach(i => {
+                        if (i.nativeNode === element)
+                            obj = i;
+                    })
+                     
                 if (element.childNodes.length)
-                    ComponentFactory.attach(map, element, result);
+                    obj.childComponents = ComponentFactory.attach(map, element);
             });
         });
 

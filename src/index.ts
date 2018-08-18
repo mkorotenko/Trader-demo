@@ -1,22 +1,29 @@
 import 'normalize.css/normalize.css';
 import './styles/index.scss';
 
-import { Table } from './models/table';
+import { Table, Button } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
 
+let symTable: Table;
 document.addEventListener("DOMContentLoaded", () => {
     const compMap = new Map();
     compMap.set('my-table', Table);
+    compMap.set('my-button', Button);
 
     let rows = [
-        { id: 'id1', action: '<button id="id1">Watch</button>'},
-        { id: 'id2', action: '<button id="id2">Watch</button>'},
-        { id: 'id3', action: '<button id="id3">Watch</button>'}
+        { id: 'id1', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'},
+        { id: 'id2', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'},
+        { id: 'id3', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'}
     ];
     const nodes = ComponentFactory.attach(compMap, (<any>document));
-    const symTable = nodes.find(n => n.id === 'symbols');
+    symTable = <Table>nodes.find(n => n.id === 'symbols');
     if (symTable) {
-        (<Table>symTable).addRows(rows);
+        setTimeout(() => {
+            (<Table>symTable).addRows(rows);
+        }, 1000);
+        setTimeout(() => {
+            (<Table>symTable).addRow({ id: 'id4', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'});
+        }, 2000);
     }
 
     console.info('Root nodes', nodes);
@@ -25,4 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function onAddSymbol() {
     console.info('onAddSymbol', arguments);
+    if (symTable)
+        (<Table>symTable).addRow({ id: `id${symTable.length}`, action: '<div class="content-right"><my-button title="Watch"></my-button></div>'});
+
 }
