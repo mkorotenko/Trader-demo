@@ -1,7 +1,7 @@
 import 'normalize.css/normalize.css';
 import './styles/index.scss';
 
-import { Table, Button } from './components/index';
+import { Table, Button, AddSymbol } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
 
 let symTable: Table;
@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const compMap = new Map();
     compMap.set('my-table', Table);
     compMap.set('my-button', Button);
+    compMap.set('my-add-symbol', AddSymbol);
 
     let rows = [
         { id: 'id1', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'},
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     console.info('Root nodes', nodes);
-    document.getElementById('onAddSymbol').addEventListener('click', onAddSymbol);
+    //document.getElementById('onAddSymbol').addEventListener('click', onAddSymbol);
 });
 
 function onAddSymbol() {

@@ -33,23 +33,7 @@
             <span>Symbols</span>
           </div>
           <my-table id="symbols" column-1="id" column-2="action"></my-table>
-          <my-symbol-add>
-            <div class="select-symbol">
-              <select>
-                <option value="1">1 second</option>
-                <option value="10">10 seconds</option>
-                <option value="60">1 minute</option>
-                <option value="600">10 minutes</option>
-              </select>/
-              <select>
-                <option value="1">1 second</option>
-                <option value="10">10 seconds</option>
-                <option value="60">1 minute</option>
-                <option value="600">10 minutes</option>
-              </select>
-            </div>
-            <button id="onAddSymbol" onclick="onAddSymbol">Add</button>
-          </my-symbol-add>
+          <my-add-symbol symbols="usd;gbr"></my-add-symbol>
         </div>
       </div>
       <div class="flex-content">
