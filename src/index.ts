@@ -2,7 +2,7 @@ import 'normalize.css/normalize.css';
 import './styles/index.scss';
 import * as ioSocket from './socket.io';
 
-import { Table, Button, AddSymbol, Refresh } from './components/index';
+import { Table, Button, AddSymbol, Refresh, Price } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
 import { IComponent } from './models/component';
 
@@ -11,6 +11,7 @@ compMap.set('my-table', Table);
 compMap.set('my-button', Button);
 compMap.set('my-add-symbol', AddSymbol);
 compMap.set('my-refresh', Refresh);
+compMap.set('my-price', Price);
 
 interface SymbolCell {
     id: string;
@@ -19,7 +20,7 @@ interface SymbolCell {
 
 interface RateCell {
     symbol: string;
-    price: number;
+    price: string;
     action: string;
 }
 
@@ -29,7 +30,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ComponentFactory.attach(compMap, (<any>document));
 
+    const refresh = getComponent('refresh');
+    refresh.change.subscribe(()=>{
+        const rate = refresh.rate || 1;
+        console.info('Refresh rate:', rate);
+    });
+    initRefreshRate(refresh);
+
     let ratesTable: Table = getComponent('rates');
+    ratesTable.change.subscribe(()=>{
+        const symRates = ratesTable.rows.map(r => ({ sym: r.data.symbol }));
+        console.info('Symbols:', symRates);
+        Price.instances.forEach(p => console.info('Price view', p));
+    });
     initRatesTable(ratesTable);
 
     let symTable: Table = getComponent('symbols');
@@ -40,9 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!symTable.rows.find(r => r.data.id === sym))
             symTable.addRow(<SymbolCell>{ id: sym, action: `<div class="content-right"><my-button title="Watch" value="${sym}"></my-button></div>` });
     })
-
-    const refresh = getComponent('refresh');
-    initRefreshRate(refresh);
 
 });
 
@@ -87,6 +97,7 @@ function initRatesTable(ratesTable: Table) {
         let data = ratesTable.rows.map(r => (<RateCell>{ symbol: r.data.symbol, price: r.data.price, action: r.data.action }));
         localStorage.setItem('ratesTable_rows', JSON.stringify(data));
     });
+    
 }
 
 function initSymTable(symTable: Table, ratesTable: Table) {
@@ -97,7 +108,7 @@ function initSymTable(symTable: Table, ratesTable: Table) {
                 addRate.click.subscribe(() => {
                     const sym = addRate.value;
                     if (!ratesTable.rows.find(r => r.data.symbol === sym))
-                        ratesTable.addRow(<RateCell>{ symbol: sym, price: 1.04, action: `<div class="content-right"><my-button title="Remove" value="${sym}"></my-button></div>` });
+                        ratesTable.addRow(<RateCell>{ symbol: sym, price: `<my-price sym="${sym}"></my-price>`, action: `<div class="content-right"><my-button title="Remove" value="${sym}"></my-button></div>` });
                 });
             }
         });

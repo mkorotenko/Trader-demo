@@ -36,6 +36,16 @@ export class ComponentFactory {
                         el.innerHTML = obj.render();
                         if (el.childNodes.length)
                             obj.childComponents = ComponentFactory.attach(map, el);
+
+                        map.forEach(e => {
+                            const list = Array.from(e.instances);
+                            let toDelete: IComponent[] = [];
+                            list.filter(l => !document.contains(l.nativeNode))
+                                .forEach(d=>toDelete.push(d));
+
+                            toDelete.forEach(d => e.instances.delete(d));
+                        });
+
                         obj.rendered.emit(this);
                     });
 
