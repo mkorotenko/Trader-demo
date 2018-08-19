@@ -29,6 +29,7 @@ export class ComponentFactory {
                     element.attributes.setNamedItem(document.createAttribute('my-processed'));
                     obj.nativeNode = element;
                     obj.id = element.id;
+                    obj.name = element.getAttribute("name");
 
                     obj.change.subscribe((comp: IComponent) => {
                         //console.info(`Component change ${selector}`, obj);

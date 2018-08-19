@@ -9,6 +9,7 @@ const COMPONENTS = new Set<Button>();
 export class Button implements IComponent, IControl {
 
     public id: string;
+    public name: string;
     
     public nativeNode: Element;
     public childNodes: Element[];
@@ -25,14 +26,32 @@ export class Button implements IComponent, IControl {
 
     public click = new EventEmitter();
 
+    private _active: boolean = false;
+    public set active(value: boolean) {
+        this._active = value;
+        this.getButtons().forEach(b => {
+            if (this._active)
+                b.classList.add('active');
+            else
+                b.classList.remove('active');
+        });
+    }
+    public get active(): boolean {
+        return this._active;
+    }
+
     constructor() {
         this.rendered.subscribe(() => {
-            let but = this.nativeNode.getElementsByTagName('button');
-            if (but && but.length) 
-                Array.from(but).forEach(b => b.addEventListener('click', () => this.click.emit(this)));
-            else 
-                console.error('my-button tag "button" not found.', this, but);
+            this.getButtons().forEach(b => b.addEventListener('click', () => this.click.emit(this)));
         })
+    }
+
+    private getButtons(): Element[] {
+        let but = this.nativeNode.getElementsByTagName('button');
+        if (but && but.length) 
+            return Array.from(but)
+        else 
+            console.error('my-button tag "button" not found.', this, but);
     }
 
     public applySettings(data: { setting: string, value: string }): Button {

@@ -2,11 +2,11 @@ import { EventEmitter } from './eventEmitter';
 
 export interface IComponent {
     id: string;
+    name: string;
+
     nativeNode: Element;
     childNodes: Element[];
     childComponents: IComponent[];
-
-    //instances: Set<IComponent>;
 
     change: EventEmitter;
     rendered: EventEmitter;

@@ -46,12 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
         } = {};
         Price.instances.forEach(p => rates[p.symbol.toLowerCase()] = p);
         dataManager.dataChange.unsubscribe();
-        dataManager.dataChange.subscribe((data: {pair:string, price: number}) => {
-            console.info('dataChange', data, rates);
+        dataManager.dataChange.subscribe((data: { pair:string, price?: number, message?: string }) => {
             let view = rates[data.pair];
             if (view)
-                view.price = data.price.toFixed(2);
-        })
+                if (data.message)
+                    view.price = `<red>${data.message}</red>`;
+                else
+                    view.price = data.price.toFixed(2);
+            });
     });
     initRatesTable(ratesTable);
 
@@ -61,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let addSym: AddSymbol = getComponent('addSym');
     addSym.addSymbol.subscribe((sym: string) => {
         if (!symTable.rows.find(r => r.data.id === sym))
-            symTable.addRow(<SymbolCell>{ id: sym, action: `<div class="content-right"><my-button title="Watch" value="${sym}"></my-button></div>` });
+            symTable.addRow(<SymbolCell>{ id: sym, action: `<div class="content-right"><my-button name="watch" title="Watch" value="${sym}"></my-button></div>` });
     })
 
 });
@@ -112,6 +114,14 @@ function initRatesTable(ratesTable: Table) {
 
 function initSymTable(symTable: Table, ratesTable: Table) {
 
+    function updateWatchState() {
+        const symRates = ratesTable.rows.map(r => r.data.symbol.toLowerCase());
+        const btns = Array.from(Button.instances);
+        btns.filter(b => b.name === 'watch').forEach(b => {
+            b.active = symRates.indexOf(b.value.toLowerCase()) > -1;
+        });
+    }
+
     symTable.rendered.subscribe(() => {
         symTable.childComponents.forEach(addRate => {
             if (addRate instanceof Button) {
@@ -122,7 +132,10 @@ function initSymTable(symTable: Table, ratesTable: Table) {
                 });
             }
         });
+        updateWatchState();
     });
+
+    ratesTable.change.subscribe(()=> updateWatchState());
 
     let symData = localStorage.getItem('symTable_rows');
     if (symData) {

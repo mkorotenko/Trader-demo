@@ -15,6 +15,7 @@ export class Table implements IComponent {
     private hasHeader: boolean = false;
 
     public id: string;
+    public name: string;
     
     public columns: Column[] = [];
     public rows: Row[] = [];

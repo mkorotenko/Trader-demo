@@ -8,6 +8,7 @@ const COMPONENTS = new Set<AddSymbol>();
 export class AddSymbol implements IComponent {
 
     public id: string;
+    public name: string;
     
     public nativeNode: Element;
     public childNodes: Element[];

@@ -9,6 +9,7 @@ const COMPONENTS = new Set<Price>();
 export class Price implements IComponent {
 
     public id: string;
+    public name: string;
     
     public nativeNode: Element;
     public childNodes: Element[];
@@ -18,7 +19,7 @@ export class Price implements IComponent {
     public static instances = COMPONENTS;
 
     public symbol: string;
-    private _price: string = '1.45';
+    private _price: string = '0.00';
     public set price(value: string) {
         this._price = value;
         if (this.nativeNode)

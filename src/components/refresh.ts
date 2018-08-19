@@ -14,6 +14,7 @@ interface RefreshRate {
 export class Refresh implements IComponent, IControl {
 
     public id: string;
+    public name: string;
     
     public nativeNode: Element;
     public childNodes: Element[];

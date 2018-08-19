@@ -18,13 +18,18 @@ export class DataManager {
         else
             this._symbols.forEach(s => {
                 this.connection.then(sock => {
+                    this.pairMessageUid[s] = Math.random();
                     sock.emit('subscribe-req', {
                         pair: s,
-                        uid: Math.random()
+                        uid: this.pairMessageUid[s]
                     })
                 })
             });
     };
+
+    private pairMessageUid: {
+        [pair: string]: number
+    } = {};
 
     public dataChange: EventEmitter = new EventEmitter();
 
@@ -38,8 +43,14 @@ export class DataManager {
                     this._socket.on('price-change', (data: any) => this.dataChange.emit(data))
                     resolve(this._socket);
                 });
-                this._socket.on('server-error', (eventData: any) => {
-                    console.error('Server error', eventData)
+                this._socket.on('server-error', (eventData: {uid: number, message: string}) => {
+                    console.error('Server error', eventData);
+                    if (eventData.message.indexOf('Invalid "pair"') > -1) {
+                        this._symbols.forEach(s => {
+                            if (this.pairMessageUid[s]===eventData.uid)
+                                this.dataChange.emit({ pair: s, message: 'Invalid symbol'});
+                        });
+                    }
                 })
             });
         }
@@ -50,20 +61,5 @@ export class DataManager {
         this._connection = undefined;
         this.dataChange.unsubscribe();
     }
-
-    constructor() {
-        //var connection = ioClient('prices-server-mock.spotware.com:8084')
-        // connection.on('connect', function () {
-        //     connection.emit('subscribe-req', {
-        //         pair: 'eurusd',
-        //         uid: Math.random()
-        //     })
-        //     connection.on('price-change', function (data) {
-        //         console.log('price-change', data)
-        //     })
-        // })
-        //console.info('Socket', this.connection);
-    }
-
 
 }
