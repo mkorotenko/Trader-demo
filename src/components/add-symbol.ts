@@ -3,7 +3,7 @@ import { EventEmitter } from '../models/eventEmitter';
 import { Button } from './index';
 
 const SYMBOL_LIST = /symbols/i;
-const COMPONENTS = new Set();
+const COMPONENTS = new Set<AddSymbol>();
 
 export class AddSymbol implements IComponent {
 

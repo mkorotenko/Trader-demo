@@ -4,43 +4,39 @@ import './styles/index.scss';
 import { Table, Button, AddSymbol } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
 
-let symTable: Table;
 document.addEventListener("DOMContentLoaded", () => {
     const compMap = new Map();
     compMap.set('my-table', Table);
     compMap.set('my-button', Button);
     compMap.set('my-add-symbol', AddSymbol);
 
-    let rows = [
-        { id: 'id1', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'},
-        { id: 'id2', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'},
-        { id: 'id3', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'}
-    ];
-    const nodes = ComponentFactory.attach(compMap, (<any>document));
-    symTable = <Table>nodes.find(n => n.id === 'symbols');
-    if (symTable) {
-        setTimeout(() => {
-            (<Table>symTable).addRows(rows);
-        }, 1000);
-        setTimeout(() => {
-            (<Table>symTable).addRow({ id: 'id4', action: '<div class="content-right"><my-button title="Watch"></my-button></div>'});
-        }, 2000);
-    }
+    ComponentFactory.attach(compMap, (<any>document));
 
-    let addSym = <AddSymbol>Array.from(AddSymbol.instances).find(a => a.id === 'addSym');
+    let symTable = Array.from(Table.instances).find(a => a.id === 'symbols');
+    if (!symTable)
+        console.error('SymTable not found');
+
+    symTable.rendered.subscribe(() => {
+        console.info('symTable renderd', symTable);
+        symTable.childComponents.forEach(c => {
+            if (c instanceof Button) {
+                c.click.subscribe(()=>{
+                    console.info('Watch', c.value);
+                });
+            }
+        });
+    });
+
+    let addSym = Array.from(AddSymbol.instances).find(a => a.id === 'addSym');
     if (addSym) {
         console.info('AddSym', addSym);
         addSym.addSymbol.subscribe((sym: string) => {
             console.info('add sym', sym);
+            symTable.addRow({ id: sym, action: `<div class="content-right"><my-button title="Watch" value="${sym}"></my-button></div>`});
         })
     }
     else
         console.error('AddSymbol component not found.');
+
 });
 
-function onAddSymbol() {
-    console.info('onAddSymbol', arguments);
-    if (symTable)
-        (<Table>symTable).addRow({ id: `id${symTable.length}`, action: '<div class="content-right"><my-button title="Watch"></my-button></div>'});
-
-}

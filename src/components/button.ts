@@ -3,7 +3,8 @@ import { IControl } from '../models/control';
 import { EventEmitter } from '../models/eventEmitter';
 
 const TITLE = /title/i;
-const COMPONENTS = new Set();
+const VALUE = /value/i;
+const COMPONENTS = new Set<Button>();
 
 export class Button implements IComponent, IControl {
 
@@ -17,6 +18,7 @@ export class Button implements IComponent, IControl {
     public static instances = COMPONENTS;
 
     public title: string = '';
+    public value: string = '';
 
     public change = new EventEmitter();
     public rendered = new EventEmitter();
@@ -37,6 +39,10 @@ export class Button implements IComponent, IControl {
 
         if (TITLE.test(data.setting)) {
             this.title = data.value;
+        }
+
+        if (VALUE.test(data.setting)) {
+            this.value = data.value;
         }
 
         return this;

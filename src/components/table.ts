@@ -8,7 +8,7 @@ interface IColumn {
 
 const COL_SETTING = /column-\d/i;
 const HAS_HEADER = /header/i;
-const COMPONENTS = new Set();
+const COMPONENTS = new Set<Table>();
 
 export class Table extends Array<Row> implements IComponent {
 
