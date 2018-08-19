@@ -1,7 +1,11 @@
 my-refresh {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 11px 8px;
+    background-color: #c4dce0;
     text-align: left;
-    display: block;
     .title {
         display: inline-block;
+        flex-grow: 1;
     }
 }

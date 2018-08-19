@@ -10,13 +10,14 @@ const COL_SETTING = /column-\d/i;
 const HAS_HEADER = /header/i;
 const COMPONENTS = new Set<Table>();
 
-export class Table extends Array<Row> implements IComponent {
+export class Table implements IComponent {
 
     private hasHeader: boolean = false;
 
     public id: string;
     
     public columns: Column[] = [];
+    public rows: Row[] = [];
 
     public header: Header;
 
@@ -29,12 +30,8 @@ export class Table extends Array<Row> implements IComponent {
     public rendered = new EventEmitter();
 
     constructor(columns?: IColumn[]) {
-        super();
-        (<any>Object).setPrototypeOf(this, Table.prototype);
-    
         if (columns)
             this.columns = columns.map((c) => new Column(c.name, c.description || ''));
-
     }
 
     public applySettings(data: { setting: string, value: string }): Table {
@@ -49,30 +46,28 @@ export class Table extends Array<Row> implements IComponent {
         return this;
     }
 
-    public map<U>(callbackfn: (value: any, index: number, array: any[]) => U, thisArg?: any): U[] {
-        let res: Row[] = [];
-        this.forEach(r => res.push(r));
-
-        return super.map.apply(res, Array.prototype.slice.apply(arguments))
-    }
-
     public addRow(data: any): Row {
         let newRow = new Row(this.columns, data);
-        this.push(newRow);
+        this.rows.push(newRow);
         this.change.emit(this);
         return newRow;
     }
 
-    public removeRow(data: any) {
-        let newRow = this.indexOf(data);//new Row(this.columns, data);
-        this.splice(newRow,1);
-        this.change.emit(this);
+    public removeRow(data: Row) {
+        if (!data)
+            return;
+            
+        let rowIndex = this.rows.indexOf(data);
+        if (rowIndex>-1) {
+            this.rows.splice(rowIndex,1);
+            this.change.emit(this);
+        }
     }
 
     public addRows(data: any[]): Row[] {
         let res: Row[];
         res = data.map(d => new Row(this.columns, d));
-        res.forEach(r => this.push(r));
+        res.forEach(r => this.rows.push(r));
         this.change.emit(this);
         return res;
     }
@@ -89,7 +84,7 @@ export class Table extends Array<Row> implements IComponent {
         if (this.hasHeader && !this.header)
             this.createHeader();
 
-        return (this.header ? this.header.render() : '') + this.map(r => r.render()).join('');
+        return (this.header ? this.header.render() : '') + this.rows.map(r => r.render()).join('');
     }
 
     public render(): string {
