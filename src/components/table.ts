@@ -83,7 +83,7 @@ export class Table extends Array<Row> implements IComponent {
         if (this.hasHeader && !this.header)
             this.createHeader();
 
-        return this.header ? this.header.render() : '' + this.map(r => r.render()).join('');
+        return (this.header ? this.header.render() : '') + this.map(r => r.render()).join('');
     }
 
     public render(): string {

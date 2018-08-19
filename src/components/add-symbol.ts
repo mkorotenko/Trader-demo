@@ -35,8 +35,14 @@ export class AddSymbol implements IComponent {
         })
     }
 
+    // private getFirstSym(): string {
+
+    // }
+
     private getSymbol(): string {
-        return 'USD,GBR';
+        const selects = Array.from(this.nativeNode.getElementsByTagName('select'));
+        //console.info('sel', selects);
+        return selects.map(s => s.value).join('');//'USDGBR';
     }
 
     public applySettings(data: { setting: string, value: string }): AddSymbol {
@@ -59,9 +65,7 @@ export class AddSymbol implements IComponent {
     }
 
     private renderSelect(): string {
-        return `<select>
-        ${this.symbolList.map(s => this.renderOption(s)).join('')}
-      </select>`;
+        return `<select>${this.symbolList.map(s => this.renderOption(s)).join('')}</select>`;
     }
 
     public render(): string {
