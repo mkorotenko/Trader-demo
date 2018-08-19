@@ -7,6 +7,7 @@ export class DataManager {
     public set refreshRate(value: number) {
         console.info('DataManager refreshRate', value);
         this._refreshRate = value;
+        //TODO make interval
     };
 
     private _symbols: string[] = [];
@@ -16,6 +17,7 @@ export class DataManager {
         if (!this._symbols.length)
             this.disconnect();
         else
+        //TODO make unsubscribe
             this._symbols.forEach(s => {
                 this.connection.then(sock => {
                     this.pairMessageUid[s] = Math.random();
