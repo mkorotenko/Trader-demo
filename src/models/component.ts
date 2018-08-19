@@ -9,6 +9,7 @@ export interface IComponent {
     //instances: Set<IComponent>;
 
     change: EventEmitter;
+    rendered: EventEmitter;
 
     applySettings: (data?: any) => IComponent;
     render: (data?: any) => string;

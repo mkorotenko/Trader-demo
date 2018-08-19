@@ -27,8 +27,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     }
 
-    console.info('Root nodes', nodes);
-    //document.getElementById('onAddSymbol').addEventListener('click', onAddSymbol);
+    let addSym = <AddSymbol>Array.from(AddSymbol.instances).find(a => a.id === 'addSym');
+    if (addSym) {
+        console.info('AddSym', addSym);
+        addSym.addSymbol.subscribe((sym: string) => {
+            console.info('add sym', sym);
+        })
+    }
+    else
+        console.error('AddSymbol component not found.');
 });
 
 function onAddSymbol() {

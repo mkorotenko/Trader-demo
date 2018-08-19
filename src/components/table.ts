@@ -26,6 +26,7 @@ export class Table extends Array<Row> implements IComponent {
     public static instances = COMPONENTS;
     
     public change = new EventEmitter();
+    public rendered = new EventEmitter();
 
     constructor(columns?: IColumn[]) {
         super();

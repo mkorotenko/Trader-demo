@@ -1,5 +1,6 @@
 import { IComponent } from '../models/component';
 import { EventEmitter } from '../models/eventEmitter';
+import { Button } from './index';
 
 const SYMBOL_LIST = /symbols/i;
 const COMPONENTS = new Set();
@@ -15,20 +16,46 @@ export class AddSymbol implements IComponent {
 
     public static instances = COMPONENTS;
 
-    public symbolList: string[] = [];
+    public symbolList: { id:string, description: string }[] = [];
 
     public change = new EventEmitter();
+    public rendered = new EventEmitter();
+
+    public addSymbol = new EventEmitter();
+
+    constructor() {
+        this.rendered.subscribe(() => {
+            let butAdd = <Button>this.childComponents.find(c => c.id === 'add-symbol');
+            if (!butAdd) {
+                console.error('AddSymbol button not found');
+                return;
+            }
+
+            butAdd.click.subscribe(() => this.addSymbol.emit(this.getSymbol()));
+        })
+    }
+
+    private getSymbol(): string {
+        return 'USD,GBR';
+    }
 
     public applySettings(data: { setting: string, value: string }): AddSymbol {
 
         if (SYMBOL_LIST.test(data.setting)) {
-            this.symbolList = data.value.split(';');
+            let list = data.value.split(';');
+            this.symbolList = list.map(s => { 
+                let sym = s.split(':');
+                return {
+                    id: sym[0],
+                    description: sym[1]||sym[0]
+                }
+            });
         }
         return this;
     }
 
-    private renderOption(symbol: string): string {
-        return `<option value="${symbol}">${symbol}</option>`;
+    private renderOption(symbol: { id: string,description: string }): string {
+        return `<option value="${symbol.id}">${symbol.description}</option>`;
     }
 
     private renderSelect(): string {
@@ -42,7 +69,7 @@ export class AddSymbol implements IComponent {
         ${this.renderSelect()}/
         ${this.renderSelect()}
       </div>
-      <my-button title="Add"></my-button>`;
+      <my-button title="Add" id="add-symbol"></my-button>`;
     }
 
 }
