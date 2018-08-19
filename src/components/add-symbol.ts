@@ -35,14 +35,9 @@ export class AddSymbol implements IComponent {
         })
     }
 
-    // private getFirstSym(): string {
-
-    // }
-
     private getSymbol(): string {
         const selects = Array.from(this.nativeNode.getElementsByTagName('select'));
-        //console.info('sel', selects);
-        return selects.map(s => s.value).join('');//'USDGBR';
+        return selects.map(s => s.value).join('');
     }
 
     public applySettings(data: { setting: string, value: string }): AddSymbol {
