@@ -1,11 +1,25 @@
+
+@import '~breakpoint-sass/stylesheets/breakpoint';
+
 .flex-container {
+  $md: 400px;
+
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+
+  @include breakpoint($md) {
+    display: flex;
+    flex-direction: row;
+  }
+
   .flex-content {
     display: block;
     padding: 0.5rem;
-    width: 100%;
     height: 100%;
+    @include breakpoint($md) {
+      width: 100%;
+    }
+  
     .section{
       .section-title {
         text-align: left;
@@ -13,5 +27,6 @@
         padding: 10px 0;
       }
     }
+
   }
 }
