@@ -1,10 +1,10 @@
 import 'normalize.css/normalize.css';
 import './styles/index.scss';
-import * as ioSocket from './socket.io';
 
 import { Table, Button, AddSymbol, Refresh, Price } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
 import { IComponent } from './models/component';
+import { DataManager } from './models/dataManager';
 
 const compMap = new Map();
 compMap.set('my-table', Table);
@@ -26,22 +26,32 @@ interface RateCell {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    //console.info('ioSocket', ioSocket);
-
     ComponentFactory.attach(compMap, (<any>document));
+
+    const dataManager = new DataManager();
 
     const refresh = getComponent('refresh');
     refresh.change.subscribe(()=>{
         const rate = refresh.rate || 1;
-        console.info('Refresh rate:', rate);
+        dataManager.refreshRate = rate;
     });
     initRefreshRate(refresh);
 
     let ratesTable: Table = getComponent('rates');
     ratesTable.change.subscribe(()=>{
-        const symRates = ratesTable.rows.map(r => ({ sym: r.data.symbol }));
-        console.info('Symbols:', symRates);
-        Price.instances.forEach(p => console.info('Price view', p));
+        const symRates = ratesTable.rows.map(r => r.data.symbol.toLowerCase());
+        dataManager.symbols = symRates;
+        const rates: { 
+            [sym: string]: Price
+        } = {};
+        Price.instances.forEach(p => rates[p.symbol.toLowerCase()] = p);
+        dataManager.dataChange.unsubscribe();
+        dataManager.dataChange.subscribe((data: {pair:string, price: number}) => {
+            console.info('dataChange', data, rates);
+            let view = rates[data.pair];
+            if (view)
+                view.price = data.price.toFixed(2);
+        })
     });
     initRatesTable(ratesTable);
 
