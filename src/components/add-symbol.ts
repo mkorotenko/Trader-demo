@@ -30,14 +30,18 @@ export class AddSymbol implements IComponent {
                 console.error('AddSymbol button not found');
                 return;
             }
-
-            butAdd.click.subscribe(() => this.addSymbol.emit(this.getSymbol()));
-        })
+            butAdd.click.subscribe(() => {
+                const sym = this.getSymbol();
+                if (sym)
+                        this.addSymbol.emit(sym)
+            });
+    })
     }
 
     private getSymbol(): string {
         const selects = Array.from(this.nativeNode.getElementsByTagName('select'));
-        return selects.map(s => s.value).join('');
+        if (selects.length && selects[0].value !== selects[1].value)
+            return selects.map(s => s.value).join('');
     }
 
     public applySettings(data: { setting: string, value: string }): AddSymbol {

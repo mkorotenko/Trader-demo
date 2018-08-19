@@ -28,7 +28,7 @@ export class Button implements IComponent, IControl {
     constructor() {
         this.rendered.subscribe(() => {
             let but = this.nativeNode.getElementsByTagName('button');
-            if (but) 
+            if (but && but.length) 
                 Array.from(but).forEach(b => b.addEventListener('click', () => this.click.emit(this)));
             else 
                 console.error('my-button tag "button" not found.', this, but);

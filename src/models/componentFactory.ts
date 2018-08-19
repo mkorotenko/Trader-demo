@@ -31,7 +31,7 @@ export class ComponentFactory {
                     obj.id = element.id;
 
                     obj.change.subscribe((comp: IComponent) => {
-                        console.info(`Component change ${selector}`, obj);
+                        //console.info(`Component change ${selector}`, obj);
                         let el = comp.nativeNode;
                         el.innerHTML = obj.render();
                         if (el.childNodes.length)

@@ -1,9 +1,16 @@
 import 'normalize.css/normalize.css';
 import './styles/index.scss';
-import * as ioSocket from './socket.io.js';
+import * as ioSocket from './socket.io';
 
-import { Table, Button, AddSymbol } from './components/index';
+import { Table, Button, AddSymbol, Refresh } from './components/index';
 import { ComponentFactory } from './models/componentFactory';
+import { IComponent } from './models/component';
+
+const compMap = new Map();
+compMap.set('my-table', Table);
+compMap.set('my-button', Button);
+compMap.set('my-add-symbol', AddSymbol);
+compMap.set('my-refresh', Refresh);
 
 interface SymbolCell {
     id: string;
@@ -19,50 +26,50 @@ interface RateCell {
 document.addEventListener("DOMContentLoaded", () => {
 
     //console.info('ioSocket', ioSocket);
-    const compMap = new Map();
-    compMap.set('my-table', Table);
-    compMap.set('my-button', Button);
-    compMap.set('my-add-symbol', AddSymbol);
 
     ComponentFactory.attach(compMap, (<any>document));
 
-    const tables = Array.from(Table.instances);
-    
-    let symTable = tables.find(a => a.id === 'symbols');
-    if (!symTable)
-        console.error('SymTable not found');
-
-    let ratesTable = tables.find(a => a.id === 'rates');
-    if (!ratesTable)
-        console.error('RatesTable not found');
-
+    let ratesTable: Table = getComponent('rates');
     initRatesTable(ratesTable);
+
+    let symTable: Table = getComponent('symbols');
     initSymTable(symTable, ratesTable);
 
-    let addSym = Array.from(AddSymbol.instances).find(a => a.id === 'addSym');
-    if (addSym) {
-        addSym.addSymbol.subscribe((sym: string) => {
+    let addSym: AddSymbol = getComponent('addSym');
+    addSym.addSymbol.subscribe((sym: string) => {
+        if (!symTable.rows.find(r => r.data.id === sym))
             symTable.addRow(<SymbolCell>{ id: sym, action: `<div class="content-right"><my-button title="Watch" value="${sym}"></my-button></div>` });
-        })
-    }
-    else
-        console.error('AddSymbol component not found.');
+    })
+
+    const refresh = getComponent('refresh');
+    initRefreshRate(refresh);
 
 });
+
+function getComponent(name: string): any {
+    let res: any;
+    compMap.forEach(i => {
+        if (!res) {
+            let inst: IComponent[] = Array.from(i.instances);
+            res = inst.find(c => (<IComponent>c).id === name);
+        }
+    });
+
+    if (!res)
+        console.error(`Component ${name} not found`);
+
+    return res;
+}
 
 function initRatesTable(ratesTable: Table) {
 
     ratesTable.rendered.subscribe(() => {
-        console.info('ratesTable renderd', ratesTable);
         ratesTable.childComponents.forEach(remove => {
-             if (remove instanceof Button) {
-                 remove.click.subscribe((rem: Button) => {
-                     console.info('Remove', rem);
-                     ratesTable.removeRow(ratesTable.rows.find(r => !r.data.symbol || r.data.symbol === rem.value));
-        //             const sym = addRate.value;
-        //             ratesTable.addRow({ symbol: sym, price: 1.04 ,action: `<div class="content-right"><my-button title="Remove" value="${sym}"></my-button></div>` });
-                 });
-             }
+            if (remove instanceof Button) {
+                remove.click.subscribe((rem: Button) => {
+                    ratesTable.removeRow(ratesTable.rows.find(r => !r.data.symbol || r.data.symbol === rem.value));
+                });
+            }
         });
     });
 
@@ -72,7 +79,7 @@ function initRatesTable(ratesTable: Table) {
         try {
             res = JSON.parse(ratesData);
         }
-        catch(e){}
+        catch (e) { }
         ratesTable.addRows(res);
     }
 
@@ -90,7 +97,7 @@ function initSymTable(symTable: Table, ratesTable: Table) {
                 addRate.click.subscribe(() => {
                     const sym = addRate.value;
                     if (!ratesTable.rows.find(r => r.data.symbol === sym))
-                        ratesTable.addRow(<RateCell>{ symbol: sym, price: 1.04 ,action: `<div class="content-right"><my-button title="Remove" value="${sym}"></my-button></div>` });
+                        ratesTable.addRow(<RateCell>{ symbol: sym, price: 1.04, action: `<div class="content-right"><my-button title="Remove" value="${sym}"></my-button></div>` });
                 });
             }
         });
@@ -102,12 +109,24 @@ function initSymTable(symTable: Table, ratesTable: Table) {
         try {
             res = JSON.parse(symData);
         }
-        catch(e){}
+        catch (e) { }
         symTable.addRows(res);
     }
 
     symTable.change.subscribe(() => {
         let data = symTable.rows.map(r => (<SymbolCell>{ id: r.data.id, action: r.data.action }));
         localStorage.setItem('symTable_rows', JSON.stringify(data));
+    });
+}
+
+function initRefreshRate(refres: Refresh) {
+
+    let rate = localStorage.getItem('refresh_rate');
+    if (typeof rate !== 'undefined') {
+        refres.rate = Number(rate);
+    }
+
+    refres.change.subscribe(() => {
+        localStorage.setItem('refresh_rate', JSON.stringify(refres.rate));
     });
 }
