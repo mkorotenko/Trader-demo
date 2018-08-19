@@ -64,11 +64,11 @@ export class AddSymbol implements IComponent {
     }
 
     public render(): string {
-        return `<div class="select-symbol">
+        return `<div class="symbol-content"><div class="select-symbol">
         ${this.renderSelect()}/
         ${this.renderSelect()}
       </div>
-      <my-button title="Add" id="add-symbol"></my-button>`;
+      <my-button title="Add" id="add-symbol"></my-button></div>`;
     }
 
 }

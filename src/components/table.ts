@@ -63,6 +63,12 @@ export class Table extends Array<Row> implements IComponent {
         return newRow;
     }
 
+    public removeRow(data: any) {
+        let newRow = this.indexOf(data);//new Row(this.columns, data);
+        this.splice(newRow,1);
+        this.change.emit(this);
+    }
+
     public addRows(data: any[]): Row[] {
         let res: Row[];
         res = data.map(d => new Row(this.columns, d));

@@ -1,5 +1,12 @@
 my-add-symbol {
+    display: block;
+    padding: 8px;
     .select-symbol {
         display: inline-block;
+        flex-grow: 1;
+    }
+    .symbol-content {
+        display: flex;
+        flex-flow: row nowrap;
     }
 }
