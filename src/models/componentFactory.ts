@@ -32,7 +32,6 @@ export class ComponentFactory {
                     obj.name = element.getAttribute("name");
 
                     obj.change.subscribe((comp: IComponent) => {
-                        //console.info(`Component change ${selector}`, obj);
                         let el = comp.nativeNode;
                         el.innerHTML = obj.render();
                         if (el.childNodes.length)

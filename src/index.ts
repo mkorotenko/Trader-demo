@@ -46,14 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
         } = {};
         Price.instances.forEach(p => rates[p.symbol.toLowerCase()] = p);
         dataManager.dataChange.unsubscribe();
-        dataManager.dataChange.subscribe((data: { pair:string, price?: number, message?: string }) => {
-            let view = rates[data.pair];
-            if (view)
-                if (data.message)
-                    view.price = `<red>${data.message}</red>`;
-                else
-                    view.price = data.price.toFixed(2);
-            });
+        dataManager.dataChange.subscribe((data: { pair:string, price?: number, message?: string }[]) => {
+            data.forEach(p => {
+                let view = rates[p.pair];
+                if (view)
+                    if (p.message)
+                        view.price = `<red>${p.message}</red>`;
+                    else
+                        view.price = p.price.toFixed(2);
+                });
+            })
     });
     initRatesTable(ratesTable);
 
