@@ -134,7 +134,7 @@ class Column implements IColumn {
     ) { }
 
     public renderHeader(): string {
-        return `<div class="Table-row-item">${this.description}</div>`;
+        return `<div class="Table-row-item"><div data-header="${this.name}">${this.description}</div></div>`;
     }
 
     public renderCell(value: string): string {

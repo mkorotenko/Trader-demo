@@ -4,8 +4,11 @@ my-refresh {
     padding: 11px 8px;
     background-color: #c4dce0;
     text-align: left;
+    border-top: 1px solid rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(0,0,0,0.2);
     .title {
         display: inline-block;
         flex-grow: 1;
+        font-weight: 500;
     }
 }
