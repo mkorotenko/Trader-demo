@@ -21,9 +21,6 @@
     },
     "devDependencies": {
         "ajv": "^6.3.0",
-        "babel-core": "^6.26.0",
-        "babel-loader": "^7.1.4",
-        "babel-preset-env": "^1.6.1",
         "breakpoint-sass": "^2.7.1",
         "clean-webpack-plugin": "^0.1.19",
         "css-loader": "^0.28.11",
