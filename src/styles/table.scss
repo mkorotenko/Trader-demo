@@ -43,7 +43,6 @@ my-table {
         flex-grow: 1;
         flex-basis: 0;
         padding: 0.5em;
-        word-break: break-word;
         &:before {
           content: attr(data-header);
           width: 30%;
