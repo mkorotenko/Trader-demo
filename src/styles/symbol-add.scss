@@ -1,13 +1,23 @@
+@import '~breakpoint-sass/stylesheets/breakpoint';
+
 my-add-symbol {
     display: block;
     padding: 8px;
     .select-symbol {
+        $md: 320px;
+
         display: inline-block;
         flex-grow: 1;
         margin-right: 5px;
+        & > div {
+            @include breakpoint($md) {
+                padding: 4px 0;
+            }
+        }
     }
     .symbol-content {
         display: flex;
         flex-flow: row nowrap;
+        align-items: center;
     }
 }

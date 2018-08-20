@@ -2,14 +2,17 @@
 @import '~breakpoint-sass/stylesheets/breakpoint';
 
 .flex-container {
-  $md: 450px;
+  $md: 470px;
 
   display: flex;
   flex-direction: column;
+  // overflow: auto;
+  // height: 100%;
 
   @include breakpoint($md) {
     display: flex;
     flex-direction: row;
+    //overflow: hidden;
   }
 
   .flex-content {
