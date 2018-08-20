@@ -10,7 +10,10 @@ const buildPath = path.resolve(__dirname, 'dist');
 
 module.exports = {
     devtool: 'source-map',
-    entry: './src/index.js',
+    entry: './src/index.ts',
+    resolve: {
+        extensions: [ '.tsx', '.ts', '.js' ]
+    },
     output: {
         filename: '[name].[hash:20].js',
         path: buildPath
@@ -18,13 +21,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-
-                options: {
-                    presets: ['env']
-                }
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
             },
             {
                 test: /\.(scss|css|sass)$/,
@@ -96,12 +95,12 @@ module.exports = {
 
             // which icons should be generated (see https://github.com/haydenbleasel/favicons#usage)
             icons: {
-                android: true,
-                appleIcon: true,
-                appleStartup: true,
+                android: false,
+                appleIcon: false,
+                appleStartup: false,
                 coast: false,
                 favicons: true,
-                firefox: true,
+                firefox: false,
                 opengraph: false,
                 twitter: false,
                 yandex: false,
