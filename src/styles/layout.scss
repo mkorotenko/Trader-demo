@@ -2,7 +2,7 @@
 @import '~breakpoint-sass/stylesheets/breakpoint';
 
 .flex-container {
-  $md: 470px;
+  $md: 530px;
 
   display: flex;
   flex-direction: column;
@@ -50,7 +50,6 @@
         font-size: 18px;
       }
       .section-content-scrollable {
-        flex: 1;
         overflow: auto;
       }
     }
