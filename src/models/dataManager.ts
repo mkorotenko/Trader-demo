@@ -16,10 +16,8 @@ export class DataManager {
 			this._timerID = undefined;
 		}
 
-		if (this._symbols.length) {
+		if (this._symbols.length) 
 			this._timerID = setInterval(this.timerHandler.bind(this), this._refreshRate * 1000);
-			this.timerHandler();
-		}
 	};
 
 	private _symbols: string[] = [];
@@ -33,7 +31,6 @@ export class DataManager {
 			this.disconnect();
 		}
 		else {
-			//TODO make unsubscribe
 			this._symbols.forEach(s => {
 				if (prev.indexOf(s) > -1) 
 					toDelete.splice(toDelete.indexOf(s), 1);
@@ -52,6 +49,7 @@ export class DataManager {
 		});
 
 		this.refreshRate = this._refreshRate;
+		setTimeout(this.timerHandler.bind(this), 300);
 	};
 
 	private pairMessageUid: {

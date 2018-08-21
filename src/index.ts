@@ -6,13 +6,6 @@ import { ComponentFactory } from './models/componentFactory';
 import { IComponent } from './models/component';
 import { DataManager } from './models/dataManager';
 
-const compMap = new Map();
-compMap.set('my-table', Table);
-compMap.set('my-button', Button);
-compMap.set('my-add-symbol', AddSymbol);
-compMap.set('my-refresh', Refresh);
-compMap.set('my-price', Price);
-
 interface SymbolCell {
     id: string;
     action: string;
@@ -23,6 +16,13 @@ interface RateCell {
     price: string;
     action: string;
 }
+
+const compMap = new Map();
+compMap.set('my-table', Table);
+compMap.set('my-button', Button);
+compMap.set('my-add-symbol', AddSymbol);
+compMap.set('my-refresh', Refresh);
+compMap.set('my-price', Price);
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -69,6 +69,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
 });
+
+//Procedure from interview:
+function replaceAll(string: string, from: string, to: string) {
+    return string.split(new RegExp(`${from}`, 'i')).join(to);
+}
 
 function getComponent(name: string): any {
     let res: any;
